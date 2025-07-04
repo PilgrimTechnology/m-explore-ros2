@@ -175,11 +175,11 @@ void Costmap2DClient::updateFullMap(
 void Costmap2DClient::updatePartialMap(
     const map_msgs::msg::OccupancyGridUpdate::SharedPtr msg)
 {
-  RCLCPP_DEBUG(node_.get_logger(), "received partial map update");
+  RCLCPP_INFO(node_.get_logger(), "received partial map update");
   global_frame_ = msg->header.frame_id;
 
   if (msg->x < 0 || msg->y < 0) {
-    RCLCPP_DEBUG(node_.get_logger(),
+    RCLCPP_INFO(node_.get_logger(),
                  "negative coordinates, invalid update. x: %d, y: %d", msg->x,
                  msg->y);
     return;
@@ -244,16 +244,19 @@ geometry_msgs::msg::Pose Costmap2DClient::getRobotPose() const
                           ex.what());
     return empty_pose;
   } catch (tf2::ExtrapolationException& ex) {
-    RCLCPP_ERROR_THROTTLE(node_.get_logger(), clk, 1000,
+    /*RCLCPP_ERROR_THROTTLE(node_.get_logger(), clk, 1000,
                           "Extrapolation Error looking up robot pose: %s\n",
-                          ex.what());
+                          ex.what());*/
     return empty_pose;
   } catch (tf2::TransformException& ex) {
     RCLCPP_ERROR_THROTTLE(node_.get_logger(), clk, 1000, "Other error: %s\n",
                           ex.what());
     return empty_pose;
   }
-
+  /*RCLCPP_INFO(node_.get_logger(), "Robot pose: [%.2f, %.2f, %.2f]", 
+        robot_pose.pose.position.x, 
+        robot_pose.pose.position.y, 
+        robot_pose.pose.position.z);*/
   return robot_pose.pose;
 }
 
